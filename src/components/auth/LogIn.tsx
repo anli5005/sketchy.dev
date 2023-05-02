@@ -64,6 +64,7 @@ export function LogIn() {
                     challenge: challengeArray,
                     timeout: 4 * 60 * 1000,
                     userVerification: "preferred",
+                    rpId: process.env.NEXT_PUBLIC_RP_ID ?? "sketchy.dev",
                 },
             }) as (PublicKeyCredential & { response: AuthenticatorAssertionResponse }) | null;
 
