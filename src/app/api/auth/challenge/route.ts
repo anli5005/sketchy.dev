@@ -26,3 +26,5 @@ export async function GET(_request: Request) {
         challenge: buffer.toString("hex"),
     });
 }
+
+export const dynamic = "force-dynamic";
