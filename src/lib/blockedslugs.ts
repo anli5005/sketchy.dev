@@ -10,4 +10,6 @@ export const blockedSlugs = [
     "manifest.json",
     "robots.txt",
     "sitemap.xml",
+    "login",
+    "file",
 ];

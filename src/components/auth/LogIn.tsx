@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type LogInState = {
@@ -14,7 +15,11 @@ type LogInState = {
     status: "error",
     isRegistering: boolean,
     error: string,
-}
+} | {
+    status: "invite-only",
+    isRegistering: boolean,
+    keyId: string,
+};
 
 function base64url(buffer: ArrayBuffer) {
     const b64 = window.btoa(String.fromCharCode(...new Uint8Array(buffer)));
@@ -22,6 +27,8 @@ function base64url(buffer: ArrayBuffer) {
 }
 
 export function LogIn() {
+    const router = useRouter();
+
     const [state, setState] = useState<LogInState>({
         status: "idle",
     });
@@ -87,7 +94,17 @@ export function LogIn() {
                 throw new Error("Failed to register");
             }
 
-            alert("Done!");
+            const { id: keyId, userFound } = await credentialResponse.json();
+
+            if (userFound) {
+                router.refresh();
+            } else {
+                setState({
+                    status: "invite-only",
+                    isRegistering: false,
+                    keyId,
+                });
+            }
         } catch (e: any) {
             console.error(e);
             setState({
@@ -177,7 +194,11 @@ export function LogIn() {
                 throw new Error("Failed to register");
             }
 
-            alert("Done!");
+            setState({
+                status: "invite-only",
+                isRegistering: true,
+                keyId: id,
+            });
         } catch (e: any) {
             console.error(e);
             setState({
@@ -189,10 +210,42 @@ export function LogIn() {
     };
 
     if (state.status === "idle") {
-        return <div className="flex flex-col justify-center items-center space-y-2">
+        return <div className="flex flex-col justify-center items-center space-y-2 text-center">
             <button type="button" onClick={login}>Log in with passkey</button>
             <button type="button" onClick={register}>Create new passkey</button>
         </div>;
+    }
+
+    if (state.status === "error") {
+        return <div className="flex flex-col justify-center items-center space-y-2 text-center">
+            <h2>Something went wrong</h2>
+            <p>{state.error}</p>
+            <button onClick={() => {
+                setState({
+                    status: "idle",
+                });
+            }} type="button">Try again</button>
+        </div>;
+    }
+
+    if (state.status === "invite-only") {
+        return <div className="flex flex-col justify-center items-center space-y-2 text-center">
+            <h2>{state.isRegistering ? "Passkey created!" : "Authentication successful"}</h2>
+            <p>sketchy.dev is invite-only. To proceed, provide your key ID to an admin:</p>
+            <p className="font-mono">{state.keyId}</p>
+        </div>;
+    }
+
+    if (state.status === "loading-challenge") {
+        return <div>Requesting authentication challenge...</div>;
+    }
+
+    if (state.status === "ready-for-credential") {
+        return <div>Follow your browser&rsquo;s instructions to continue.</div>;
+    }
+
+    if (state.status === "authenticating") {
+        return <div>Verifying challenge response...</div>;
     }
 
     return <div>One moment...</div>;

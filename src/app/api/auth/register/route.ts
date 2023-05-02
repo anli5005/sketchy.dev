@@ -2,13 +2,36 @@ import prisma from "@/lib/prisma";
 import f2l, { base64url, unbase64url } from "../f2l";
 import { Fido2AttestationResult } from "fido2-lib";
 import { NextResponse } from "next/server";
+import { InferType, ValidationError, object, string } from "yup";
+
+const bodySchema = object({
+    id: string().required(),
+    attestation: object({
+        id: string().required(),
+        response: object({
+            clientDataJSON: string().required(),
+            attestationObject: string().required(),
+        }).required(),
+    }).required(),
+}).required();
 
 export async function POST(request: Request) {
     const json = await request.json();
+    let validated: InferType<typeof bodySchema>;
 
-    // TODO: Validate JSON
+    try {
+        validated = await bodySchema.validate(json, { strict: true });
+    } catch (e: any) {
+        if (e instanceof ValidationError) {
+            return new Response(e.message, {
+                status: 400,
+            });
+        } else {
+            throw e;
+        }
+    }
 
-    const { id, attestation } = json;
+    const { id, attestation } = validated;
     
     const challenge = await prisma.challenge.delete({
         where: {
@@ -56,11 +79,10 @@ export async function POST(request: Request) {
     await prisma.publicKey.create({
         data: {
             id,
-            keyId:attestation.id,
+            keyId: attestation.id,
             keyData,
         },
     });
     
-    // TODO: Issue auth token
     return NextResponse.json({ ok: true });
 }

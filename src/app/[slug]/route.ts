@@ -3,15 +3,8 @@ import { NextResponse } from "next/server";
 
 export async function GET(request: Request, { params: { slug } }: { params: { slug: string } }) {
     if (slug.startsWith("@")) {
-        try {
-            const url = new URL(request.url);
-            const destination = `${url.protocol}//${url.host}/manage/space/${encodeURIComponent(slug.slice(1))}`;
-            return NextResponse.redirect(destination, { status: 301 });
-        } catch (e) {
-            return new Response("Invalid URL", {
-                status: 400,
-            });
-        }
+        const destination = `${process.env.EXPECTED_ORIGIN ?? "https://sketchy.dev"}/manage/space/${encodeURIComponent(slug.slice(1))}`;
+        return NextResponse.redirect(destination, { status: 301 });
     }
     
     const link = await prisma.link.findUnique({
