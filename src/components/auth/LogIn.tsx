@@ -63,6 +63,7 @@ export function LogIn() {
                 publicKey: {
                     challenge: challengeArray,
                     timeout: 4 * 60 * 1000,
+                    userVerification: "preferred",
                 },
             }) as (PublicKeyCredential & { response: AuthenticatorAssertionResponse }) | null;
 

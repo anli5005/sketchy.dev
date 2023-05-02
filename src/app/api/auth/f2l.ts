@@ -7,6 +7,7 @@ const f2l = new Fido2Lib({
     challengeSize: 128,
     attestation: "none",
     cryptoParams: [-7, -257],
+    authenticatorUserVerification: "preferred",
 });
 
 export default f2l;
