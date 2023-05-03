@@ -61,6 +61,7 @@ export function LogIn() {
 
             const credential = await navigator.credentials.get({
                 publicKey: {
+                    allowCredentials: [],
                     challenge: challengeArray,
                     timeout: 4 * 60 * 1000,
                     userVerification: "preferred",
