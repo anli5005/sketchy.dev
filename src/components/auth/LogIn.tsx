@@ -163,6 +163,8 @@ export function LogIn() {
                         },
                     ],
                     authenticatorSelection: {
+                        residentKey: "preferred",
+                        requireResidentKey: false,
                         userVerification: "preferred",
                     },
                     timeout: 4 * 60 * 1000,
