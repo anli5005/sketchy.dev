@@ -3,7 +3,7 @@ import { JwtPayload, verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import prisma from "./prisma";
 
-export async function getUser(request?: Request): Promise<User | undefined> {
+export async function getUser(request?: Request) {
     if (!process.env.AUTH_SECRET) {
         throw new Error("Missing AUTH_SECRET");
     }
