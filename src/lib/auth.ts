@@ -35,9 +35,15 @@ export async function getUser(request?: Request) {
 
     if (!decoded) return undefined;
 
-    return await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
         where: {
             tokenSubject: decoded.sub!,
         },
-    }) ?? undefined;
+    });
+
+    if (!user?.isActive) {
+        return undefined;
+    }
+
+    return user;
 }

@@ -16,7 +16,7 @@ export function SidebarLayout({ sidebar, children }: {
                 {sidebar}
             </div>
         </div>
-        <div className={`${preferSidebar ? "hidden md:block" : "w-full"} md:ml-96`}>
+        <div className={`${preferSidebar ? "hidden md:block" : "w-full md:w-auto"} md:ml-96`}>
             {children}
         </div>
     </div>;

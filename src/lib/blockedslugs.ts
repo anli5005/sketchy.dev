@@ -12,4 +12,9 @@ export const blockedSlugs = [
     "sitemap.xml",
     "login",
     "file",
+    "new",
 ];
+
+export const validSlugRegex = /^[a-z0-9-_]+$/;
+export const minLength = 3;
+export const maxLength = 32;
