@@ -5,7 +5,7 @@ import { blockedSlugs, maxLength, minLength, validSlugRegex } from "@/lib/blocke
 import { getUser } from "@/lib/auth";
 
 const bodySchema = object({
-    slug: string().required().min(minLength).max(maxLength).matches(validSlugRegex).notOneOf(blockedSlugs),
+    slug: string().required().min(minLength).max(maxLength).matches(validSlugRegex),
 }).required();
 
 export async function POST(request: Request) {

@@ -21,7 +21,7 @@ export default async function Home() {
         });
 
         if (space) {
-            redirect(`/manage/spaces/${encodeURIComponent(space.slug)}`);
+            redirect(`/manage/space/${encodeURIComponent(space.slug)}`);
         } else {
             redirect("/manage");
         }
