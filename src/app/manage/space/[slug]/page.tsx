@@ -5,6 +5,8 @@ import { notFound, redirect } from "next/navigation";
 export default async function Space({ params }: {
     params: { slug: string },
 }) {
+    if (params.slug.toLowerCase() !== params.slug) redirect(`/manage/space/${encodeURIComponent(params.slug.toLowerCase())}`);
+
     const user = await getUser();
     if (!user) redirect("/");
 
